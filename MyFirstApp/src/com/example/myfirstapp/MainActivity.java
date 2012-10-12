@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
 //          TextView textView = new TextView(this);
             EditText editText = (EditText) findViewById(R.id.edit_message);
 //          editText.setTextSize(15);
-            editText.setText(bridgeNum, TextView.BufferType.EDITABLE);
+            editText.setText(bridgeNum, TextView.BufferType.NORMAL);
 //            setContentView(R.layout.activity_main);
         	}; 
 //        EditText editText = (EditText) findViewById(R.id.edit_message);
