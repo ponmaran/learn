@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
@@ -17,22 +18,28 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         // Get shared preferences
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         String bridgeNum = sharedPref.getString(getString(R.string.bridgeNum), "");
-        String message = new String();
+//        String message = new String();
         if (bridgeNum.equals(""))
         	{
-	            setContentView(R.layout.activity_main);
 //	            message = "Your input \"" + message + "\" is saved";
+            Intent intent = new Intent(this, DisplayMessageActivity.class);
+            intent.putExtra(EXTRA_MESSAGE, "No Data");
+            startActivity(intent);
         	}
         else
         	{
-            	message = bridgeNum;
-                Intent intent = new Intent(this, DisplayMessageActivity.class);
-                intent.putExtra(EXTRA_MESSAGE, message);
-                startActivity(intent);
-        	};
+//			message = bridgeNum;
+//          TextView textView = new TextView(this);
+            EditText editText = (EditText) findViewById(R.id.edit_message);
+//          editText.setTextSize(15);
+            editText.setText(bridgeNum, TextView.BufferType.EDITABLE);
+//            setContentView(R.layout.activity_main);
+        	}; 
+//        EditText editText = (EditText) findViewById(R.id.edit_message);
     }
 
     @Override
