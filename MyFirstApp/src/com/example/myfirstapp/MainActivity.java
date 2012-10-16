@@ -103,9 +103,9 @@ public class MainActivity extends Activity {
         	pauses = pauses + ",";
         }
 
-        String numSeq = "tel:" + bridgeNum + ",," + "9803338444";
+        String numSeq = "tel:" + bridgeNum + pauses + "9803338444";
         Uri number = Uri.parse(numSeq);
-        number = Uri.parse("tel:9803338444");
+//        number = Uri.parse("tel:9803338444");
         Intent callIntent = new Intent(Intent.ACTION_CALL, number);
         startActivity(callIntent);
 	}
