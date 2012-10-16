@@ -47,17 +47,24 @@
             android:id="@+id/done_button"
             android:layout_width="20dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.50"
+            android:layout_weight="1"
             android:onClick="editDone"
-            android:text="@string/button_done" />
-
-        <Button
+            android:text="@string/button_done_label" />
+		<Button
             android:id="@+id/reset_button"
             android:layout_width="20dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.50"
+            android:layout_weight="1"
             android:onClick="pressReset"
-            android:text="@string/button_reset" />
+            android:text="@string/button_reset_label" />
+
+        <Button
+            android:id="@+id/call_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="pressCall"
+            android:text="@string/button_call_label" />
 
     </LinearLayout>
     
