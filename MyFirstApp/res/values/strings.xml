@@ -1,11 +1,16 @@
 <resources>
 
     <string name="app_name">Hooker</string>
-    <string name="edit_message">Access Number</string>
+    <string name="edit_bridge_num_hint">Access Number</string>
     <string name="button_done">Done</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">My First App</string>
+    <string name="title_activity_main">Hooker Home</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_display_message">Your Input</string>
 	<string name="bridgeNum"></string>
+	<string name="edit_delay_hint">Delay</string>
+	<string name="delayTime"></string>
+	<string name="config_page_message">Add the numbers and delays to following that number. Phone number will be dialed after the numbers and delays added here.</string>
+	<string name="shared_prefs_file">MY_SHARED_PREF</string>
+	
 </resources>
