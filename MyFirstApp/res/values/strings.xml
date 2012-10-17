@@ -7,14 +7,15 @@
     <string name="title_activity_main">Hooker</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_display_message">Your Input</string>
-	<string name="bridgeNum">99999</string>
-	<string name="edit_delay_hint">Delay</string>
-	<string name="delayTime">11111</string>
-	<string name="config_page_message">Add the access and passcode numbers and delays to following those. Phone number will be dialed at last.</string>
-	<string name="shared_prefs_file">MY_SHARED_PREF</string>
-	<string name="button_reset_label">Reset</string>
-	<string name="bridge_default_value"></string>
-	<string name="delay_default_value">00</string>
-	<string name="button_call_label">Call</string>
-	
+    <string name="bridgeNum">99999</string>
+    <string name="edit_delay_hint">Delay</string>
+    <string name="delayTime">11111</string>
+    <string name="config_page_message">Add the access and passcode numbers and delays to following those. Phone number will be dialed at last.</string>
+    <string name="shared_prefs_file">MY_SHARED_PREF</string>
+    <string name="button_reset_label">Reset</string>
+    <string name="bridge_default_value"></string>
+    <string name="delay_default_value">00</string>
+    <string name="button_call_label">Call</string>
+    <string name="title_activity_call_bridge">CallBridgeActivity</string>
+
 </resources>

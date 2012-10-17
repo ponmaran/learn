@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -88,25 +87,12 @@ public class MainActivity extends Activity {
 
     /** Called when the user clicks the Call button */
     public void pressCall(View view) {
-
-        SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.shared_prefs_file), Context.MODE_PRIVATE);
-        String bridgeNum = sharedPref.getString(getString(R.string.bridgeNum), getString(R.string.bridge_default_value));
-        String delayTime = sharedPref.getString(getString(R.string.delayTime), getString(R.string.delay_default_value));
-
-        int delayTimeNum = Integer.parseInt(delayTime);
-
-        Toast.makeText(getApplicationContext(), sharedPref.getString(getString(R.string.delayTime), "00"), Toast.LENGTH_SHORT).show();
-        
-        String pauses = new String();
-        for(int i=0;i<delayTimeNum;i++)
-        {
-        	pauses = pauses + ",";
-        }
-
-        String numSeq = "tel:" + bridgeNum + pauses + "9803338444";
-        Uri number = Uri.parse(numSeq);
-//        number = Uri.parse("tel:9803338444");
+//    	Toast.makeText(getApplicationContext(), "Nothing coded here :@", Toast.LENGTH_SHORT).show();
+//        String numSeq = "tel:" + bridgeNum + pauses + dialedNumber;
+//        Uri number = Uri.parse(numSeq);
+        Uri number = Uri.parse("tel:9803338444");
         Intent callIntent = new Intent(Intent.ACTION_CALL, number);
         startActivity(callIntent);
+
 	}
 }
