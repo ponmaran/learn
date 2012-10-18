@@ -1,16 +1,14 @@
 package com.example.myfirstapp;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -94,7 +92,7 @@ public class MainActivity extends Activity {
         Intent callIntent = new Intent(Intent.ACTION_CALL, number);
         startActivity(callIntent);
 */
-    	String[] fields = {
+/*    	String[] fields = {
     		    android.provider.CallLog.Calls.NUMBER, 
     		    };
     		String order = android.provider.CallLog.Calls.DATE + " DESC"; 
@@ -119,6 +117,16 @@ public class MainActivity extends Activity {
 
     			while (c.moveToNext());
 //    	    	Toast.makeText(getApplicationContext(), "Updating call log" + String.valueOf(result), Toast.LENGTH_SHORT).show();
-    		};
+    		};*/
+    	String phNum = "+19803338444,,p,w2355";
+    	System.out.println( phNum + "Network portion" + PhoneNumberUtils.extractNetworkPortion(phNum));
+//    	phNum = "9803338444";
+    	System.out.println( phNum + "Post dial portion" + PhoneNumberUtils.extractPostDialPortion(phNum));
+//    	phNum = "+19803338444,,p,w2355";
+    	System.out.println( phNum + " Formated " +PhoneNumberUtils.formatNumber(phNum));
+    	phNum = "011 91 98488 3244";
+    	System.out.println( phNum + " Network Portion " + PhoneNumberUtils.extractNetworkPortion(phNum) );
+//    	phNum = "+1-984-883-244";
+    	System.out.println( phNum + (PhoneNumberUtils.isGlobalPhoneNumber(phNum)?" is Global":" is Local"));
 	}
 }
