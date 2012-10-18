@@ -1,15 +1,16 @@
 package com.example.myfirstapp;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -87,12 +88,37 @@ public class MainActivity extends Activity {
 
     /** Called when the user clicks the Call button */
     public void pressCall(View view) {
-//    	Toast.makeText(getApplicationContext(), "Nothing coded here :@", Toast.LENGTH_SHORT).show();
 //        String numSeq = "tel:" + bridgeNum + pauses + dialedNumber;
 //        Uri number = Uri.parse(numSeq);
-        Uri number = Uri.parse("tel:9803338444");
+/*        Uri number = Uri.parse("tel:9803338444");
         Intent callIntent = new Intent(Intent.ACTION_CALL, number);
         startActivity(callIntent);
+*/
+    	String[] fields = {
+    		    android.provider.CallLog.Calls.NUMBER, 
+    		    };
+    		String order = android.provider.CallLog.Calls.DATE + " DESC"; 
 
+    		Cursor c = getContentResolver().query(
+    		    android.provider.CallLog.Calls.CONTENT_URI,
+    		    fields,
+    		    null,
+    		    null,
+    		    order
+    		    );
+
+    		if(c.moveToFirst()){
+    			do{
+	    			String firstNum = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
+	        		System.out.println("After-cursor " + firstNum);
+	    	    	ContentValues valueSet = new ContentValues();
+	    	    	valueSet.put(android.provider.CallLog.Calls.NUMBER, "9803338444");
+	
+	    	    	int result = getContentResolver().update(android.provider.CallLog.Calls.CONTENT_URI, valueSet, android.provider.CallLog.Calls.NUMBER + "=" +firstNum, null);
+    			}
+
+    			while (c.moveToNext());
+//    	    	Toast.makeText(getApplicationContext(), "Updating call log" + String.valueOf(result), Toast.LENGTH_SHORT).show();
+    		};
 	}
 }

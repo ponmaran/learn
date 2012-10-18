@@ -7,14 +7,13 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
-import android.widget.Toast;
 
 public class CallBridgeActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_call_bridge);
+//        setContentView(R.layout.activity_call_bridge);
 //        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         String dialedNumber = getIntent().getDataString();
@@ -41,13 +40,10 @@ public class CallBridgeActivity extends Activity {
         }
 
         String numSeq = "tel:" + bridgeNum + pauses + dialedNumber;
-        Toast.makeText(getApplicationContext(), "\"" + numSeq + "\"", Toast.LENGTH_LONG).show();
         System.out.println(numSeq);
         Uri number = Uri.parse(numSeq);
-//        number = Uri.parse("tel:9803338444");
         Intent callIntent = new Intent(Intent.ACTION_CALL, number);
         startActivity(callIntent);
-
     }
 
     @Override
