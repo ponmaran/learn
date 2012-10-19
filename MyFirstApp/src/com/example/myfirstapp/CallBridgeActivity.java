@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 
 public class CallBridgeActivity extends Activity {
@@ -27,42 +29,28 @@ public class CallBridgeActivity extends Activity {
         {
         	dialedNumber = dialedNumber.substring(4);
         };
-        System.out.println("Actual dialed number is " + dialedNumber);
 
-        System.out.println("(0,2) \"" + dialedNumber.substring(0, 2) + "\"");
-//        dialedNumber = PhoneNumberUtils.formatNumber(dialedNumber);
-//        System.out.println("Formatted dialed number is " + dialedNumber);
-        
         String numSeq = new String();
         
-        if (PhoneNumberUtils.isGlobalPhoneNumber(dialedNumber)){
-            System.out.println("Global number" + dialedNumber);
-        	if (dialedNumber.substring(0, 2).equals("+1")){
-        		System.out.println(dialedNumber + " is US Number");
-        		numSeq = "tel:"+ dialedNumber;
-        	}
-        	else if ( dialedNumber.substring(0,3).equals("011")){
-        		System.out.println(dialedNumber + " is non US with 011");
-        		numSeq = nonUsNumSeqBuild(dialedNumber);
-        	}
-        	else if (dialedNumber.substring(0,1).equals("+")){
-        		System.out.println(dialedNumber + " is non US with +");
-        		dialedNumber = dialedNumber.substring(1);
-        		numSeq = nonUsNumSeqBuild(dialedNumber);
-        	}
-        	else {
-        		System.out.println(dialedNumber + " is US number w/o country code");
-        		numSeq = "tel:" + dialedNumber;
-        	};
-/*        }
-        else{
-            System.out.println("Not a global number" + dialedNumber);
-        	if 
-        	else{
-        		System.out.println(dialedNumber + " is US number without \'+\'");
-        		numSeq = "tel:"+ dialedNumber;
-        	};*/
-        };
+//		Phone number type identification
+        if (dialedNumber.substring(0, 2).equals("+1")){
+    		System.out.println(dialedNumber + " is US Number");
+    		numSeq = "tel:"+ dialedNumber;
+    	}
+    	else if ( dialedNumber.substring(0,3).equals("011")){
+    		System.out.println(dialedNumber + " is non US with 011");
+    		numSeq = nonUsNumSeqBuild(dialedNumber);
+    	}
+    	else if (dialedNumber.substring(0,1).equals("+")){
+    		System.out.println(dialedNumber + " is non US with +");
+    		dialedNumber = dialedNumber.substring(1);
+    		numSeq = nonUsNumSeqBuild(dialedNumber);
+    	}
+    	else {
+    		System.out.println(dialedNumber + " is US number w/o country code");
+    		numSeq = "tel:" + dialedNumber;
+    	};
+
         System.out.println("Number Sequence: " + numSeq);
 
 //        Toast.makeText(getApplicationContext(), "\"" + dialedNumber + "\"", Toast.LENGTH_LONG).show();
@@ -70,6 +58,14 @@ public class CallBridgeActivity extends Activity {
         Uri number = Uri.parse(numSeq);
         Intent callIntent = new Intent(Intent.ACTION_CALL, number);
         startActivity(callIntent);
+        
+    	System.out.println("Call Initiated");
+        
+        EndCallListener callListener = new EndCallListener();
+        TelephonyManager telPhMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+
+        telPhMgr.listen(callListener, PhoneStateListener.LISTEN_CALL_STATE);
+    	System.out.println("Started Listening");
     }
 
     private String nonUsNumSeqBuild(String dialedNum){
@@ -94,6 +90,36 @@ public class CallBridgeActivity extends Activity {
         return true;
     }
 
+    private class EndCallListener extends PhoneStateListener{
+    	
+    	int initiator = 0;
+    	
+    	@Override
+    	public void onCallStateChanged(int state, String incomingNumber) {
+            if(TelephonyManager.CALL_STATE_RINGING == state) {
+//                Log.i(LOG_TAG, "RINGING, number: " + incomingNumber);
+            	System.out.println("Phone Ringing for: " + incomingNumber);
+            }
+            if(TelephonyManager.CALL_STATE_OFFHOOK == state) {
+                //wait for phone to go offhook (probably set a boolean flag) so you know your app initiated the call.
+//                Log.i(LOG_TAG, "OFFHOOK");
+            	initiator = 1;
+            	System.out.println("Phone OFFHOOK; Number: \"" + incomingNumber + "\"");
+            }
+            if(TelephonyManager.CALL_STATE_IDLE == state) {
+                //when this state occurs, and your flag is set, restart your app
+//                Log.i(LOG_TAG, "IDLE");
+            	System.out.println("Phone Idle; Number: \"" + incomingNumber + "\"");
+            	if (initiator == 1){
+//            		((TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE)).listen(this, LISTEN_NONE); 
+            		System.out.println("After call idle state");
+            	}
+            	else{
+            		System.out.println("Before call idle state");
+            	};
+            }
+        }
+    }
     
 /*    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
