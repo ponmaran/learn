@@ -18,40 +18,51 @@ public class CallBridgeActivity extends Activity {
 //        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         String dialedNumber = getIntent().getDataString();
-        System.out.println("Actual dialed number from URI " + dialedNumber);
+        System.out.println("*************");
+        System.out.println("Actual dialed number from URI " + dialedNumber + " Lenght: " + String.valueOf(dialedNumber.length()));
+        dialedNumber = dialedNumber.replaceAll("%2B", "+");
+        dialedNumber = PhoneNumberUtils.extractNetworkPortion(dialedNumber);
+        System.out.println("After replace " + dialedNumber + " Lenght: " + String.valueOf(dialedNumber.length()));
         if (dialedNumber.substring(0,4).matches("tel:"))
         {
         	dialedNumber = dialedNumber.substring(4);
         };
-        System.out.println("*************");
         System.out.println("Actual dialed number is " + dialedNumber);
 
+        System.out.println("(0,2) \"" + dialedNumber.substring(0, 2) + "\"");
 //        dialedNumber = PhoneNumberUtils.formatNumber(dialedNumber);
 //        System.out.println("Formatted dialed number is " + dialedNumber);
         
         String numSeq = new String();
         
         if (PhoneNumberUtils.isGlobalPhoneNumber(dialedNumber)){
-        	if (dialedNumber.substring(0, 2) == "+1"){
+            System.out.println("Global number" + dialedNumber);
+        	if (dialedNumber.substring(0, 2).equals("+1")){
         		System.out.println(dialedNumber + " is US Number");
         		numSeq = "tel:"+ dialedNumber;
         	}
-        	else{
-        		System.out.println(dialedNumber + " is non US number");
-//        		numSeq = nonUsNumSeqBuild(dialedNumber);
-        	};
-        }
-        else{
-        	if ( dialedNumber.substring(0,3) == "011"){
+        	else if ( dialedNumber.substring(0,3).equals("011")){
         		System.out.println(dialedNumber + " is non US with 011");
-//        		numSeq = nonUsNumSeqBuild(dialedNumber);
+        		numSeq = nonUsNumSeqBuild(dialedNumber);
         	}
+        	else if (dialedNumber.substring(0,1).equals("+")){
+        		System.out.println(dialedNumber + " is non US with +");
+        		dialedNumber = dialedNumber.substring(1);
+        		numSeq = nonUsNumSeqBuild(dialedNumber);
+        	}
+        	else {
+        		System.out.println(dialedNumber + " is US number w/o country code");
+        		numSeq = "tel:" + dialedNumber;
+        	};
+/*        }
+        else{
+            System.out.println("Not a global number" + dialedNumber);
+        	if 
         	else{
         		System.out.println(dialedNumber + " is US number without \'+\'");
         		numSeq = "tel:"+ dialedNumber;
-        	};
+        	};*/
         };
-//        numSeq = dialedNumber;
         System.out.println("Number Sequence: " + numSeq);
 
 //        Toast.makeText(getApplicationContext(), "\"" + dialedNumber + "\"", Toast.LENGTH_LONG).show();
