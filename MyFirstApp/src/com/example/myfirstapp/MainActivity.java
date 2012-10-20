@@ -92,32 +92,6 @@ public class MainActivity extends Activity {
         Intent callIntent = new Intent(Intent.ACTION_CALL, number);
         startActivity(callIntent);
 */
-/*    	String[] fields = {
-    		    android.provider.CallLog.Calls.NUMBER, 
-    		    };
-    		String order = android.provider.CallLog.Calls.DATE + " DESC"; 
-
-    		Cursor c = getContentResolver().query(
-    		    android.provider.CallLog.Calls.CONTENT_URI,
-    		    fields,
-    		    null,
-    		    null,
-    		    order
-    		    );
-
-    		if(c.moveToFirst()){
-    			do{
-	    			String firstNum = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
-	        		System.out.println("After-cursor " + firstNum);
-	    	    	ContentValues valueSet = new ContentValues();
-	    	    	valueSet.put(android.provider.CallLog.Calls.NUMBER, "9803338444");
-	
-	    	    	int result = getContentResolver().update(android.provider.CallLog.Calls.CONTENT_URI, valueSet, android.provider.CallLog.Calls.NUMBER + "=" +firstNum, null);
-    			}
-
-    			while (c.moveToNext());
-//    	    	Toast.makeText(getApplicationContext(), "Updating call log" + String.valueOf(result), Toast.LENGTH_SHORT).show();
-    		};*/
     	String phNum = "+19803338444,,p,w2355";
     	System.out.println( phNum + "Network portion" + PhoneNumberUtils.extractNetworkPortion(phNum));
 //    	phNum = "9803338444";

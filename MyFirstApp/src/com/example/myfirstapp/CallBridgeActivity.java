@@ -1,9 +1,11 @@
 package com.example.myfirstapp;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
@@ -18,17 +20,29 @@ public class CallBridgeActivity extends Activity {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_call_bridge);
 //        getActionBar().setDisplayHomeAsUpEnabled(true);
+        
+//        String uriData, uriDataCorr, dialedNumber;
 
-        String dialedNumber = getIntent().getDataString();
+        String uriData = new String();
+        
+        uriData = getIntent().getDataString();
         System.out.println("*************");
-        System.out.println("Actual dialed number from URI " + dialedNumber + " Lenght: " + String.valueOf(dialedNumber.length()));
-        dialedNumber = dialedNumber.replaceAll("%2B", "+");
-        dialedNumber = PhoneNumberUtils.extractNetworkPortion(dialedNumber);
-        System.out.println("After replace " + dialedNumber + " Lenght: " + String.valueOf(dialedNumber.length()));
-        if (dialedNumber.substring(0,4).matches("tel:"))
-        {
-        	dialedNumber = dialedNumber.substring(4);
+        System.out.println("Actual dialed number from URI " + uriData + " Lenght: " + String.valueOf(uriData.length()));
+
+        String uriDataCorr = new String();
+
+        if (uriData.contains("%2B")){
+            uriDataCorr = uriData.replaceAll("%2B", "+");
         };
+
+        String dialedNumber = new String();
+        if (uriDataCorr.equals("")){
+            dialedNumber = PhoneNumberUtils.extractNetworkPortion(uriData);
+        }
+        else{
+            dialedNumber = PhoneNumberUtils.extractNetworkPortion(uriDataCorr);
+        };
+        System.out.println("After replace " + dialedNumber + " Lenght: " + String.valueOf(dialedNumber.length()));
 
         String numSeq = new String();
         
@@ -40,11 +54,29 @@ public class CallBridgeActivity extends Activity {
     	else if ( dialedNumber.substring(0,3).equals("011")){
     		System.out.println(dialedNumber + " is non US with 011");
     		numSeq = nonUsNumSeqBuild(dialedNumber);
+            
+            EndCallListener callListener = new EndCallListener();
+            callListener.dialedNumber = dialedNumber;
+            callListener.bridgeNumber = PhoneNumberUtils.extractNetworkPortion(numSeq);
+            TelephonyManager telPhMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+
+            telPhMgr.listen(callListener, PhoneStateListener.LISTEN_CALL_STATE);
+        	System.out.println("Started Listening");
+
     	}
     	else if (dialedNumber.substring(0,1).equals("+")){
     		System.out.println(dialedNumber + " is non US with +");
-    		dialedNumber = dialedNumber.substring(1);
-    		numSeq = nonUsNumSeqBuild(dialedNumber);
+    		String dialedNumberUpdt ="011" + dialedNumber.substring(1);
+    		numSeq = nonUsNumSeqBuild(dialedNumberUpdt);
+
+    		EndCallListener callListener = new EndCallListener();
+            callListener.dialedNumber = dialedNumber;
+            callListener.bridgeNumber = PhoneNumberUtils.extractNetworkPortion(numSeq);
+            TelephonyManager telPhMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+
+            telPhMgr.listen(callListener, PhoneStateListener.LISTEN_CALL_STATE);
+        	System.out.println("Started Listening");
+
     	}
     	else {
     		System.out.println(dialedNumber + " is US number w/o country code");
@@ -52,20 +84,12 @@ public class CallBridgeActivity extends Activity {
     	};
 
         System.out.println("Number Sequence: " + numSeq);
-
-//        Toast.makeText(getApplicationContext(), "\"" + dialedNumber + "\"", Toast.LENGTH_LONG).show();
         
         Uri number = Uri.parse(numSeq);
         Intent callIntent = new Intent(Intent.ACTION_CALL, number);
         startActivity(callIntent);
         
     	System.out.println("Call Initiated");
-        
-        EndCallListener callListener = new EndCallListener();
-        TelephonyManager telPhMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-
-        telPhMgr.listen(callListener, PhoneStateListener.LISTEN_CALL_STATE);
-    	System.out.println("Started Listening");
     }
 
     private String nonUsNumSeqBuild(String dialedNum){
@@ -81,7 +105,12 @@ public class CallBridgeActivity extends Activity {
         	pauses = pauses + ",";
         }
 
-        return "tel:" + bridgeNum + pauses + dialedNum;
+        if (bridgeNum.equals(getString(R.string.bridge_default_value))){
+        	return "tel:" + dialedNum;
+        }
+        else{
+            return "tel:" + bridgeNum + pauses + dialedNum;
+        }
     };
     
     @Override
@@ -92,32 +121,62 @@ public class CallBridgeActivity extends Activity {
 
     private class EndCallListener extends PhoneStateListener{
     	
-    	int initiator = 0;
+    	boolean activeCallInd = false;
+    	String dialedNumber, bridgeNumber, curLogNum;
     	
     	@Override
     	public void onCallStateChanged(int state, String incomingNumber) {
-            if(TelephonyManager.CALL_STATE_RINGING == state) {
-//                Log.i(LOG_TAG, "RINGING, number: " + incomingNumber);
+
+    		switch (state){
+    		case TelephonyManager.CALL_STATE_RINGING:
             	System.out.println("Phone Ringing for: " + incomingNumber);
-            }
-            if(TelephonyManager.CALL_STATE_OFFHOOK == state) {
-                //wait for phone to go offhook (probably set a boolean flag) so you know your app initiated the call.
-//                Log.i(LOG_TAG, "OFFHOOK");
-            	initiator = 1;
+            	break;
+    		case TelephonyManager.CALL_STATE_OFFHOOK:
+    			activeCallInd = true;
             	System.out.println("Phone OFFHOOK; Number: \"" + incomingNumber + "\"");
-            }
-            if(TelephonyManager.CALL_STATE_IDLE == state) {
-                //when this state occurs, and your flag is set, restart your app
-//                Log.i(LOG_TAG, "IDLE");
+            	break;
+    		case TelephonyManager.CALL_STATE_IDLE:
             	System.out.println("Phone Idle; Number: \"" + incomingNumber + "\"");
-            	if (initiator == 1){
-//            		((TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE)).listen(this, LISTEN_NONE); 
+            	System.out.println(dialedNumber);
+            	if (activeCallInd == true ){
+            		((TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE)).listen(this, LISTEN_NONE); 
             		System.out.println("After call idle state");
+            		String[] fields = {
+        		    android.provider.CallLog.Calls.NUMBER, 
+        		    };
+            		String order = android.provider.CallLog.Calls.DATE + " DESC"; 
+
+            		Cursor c = getContentResolver().query(
+            				
+            				android.provider.CallLog.Calls.CONTENT_URI,
+            				fields,
+		        		    null,
+		        		    null,
+		        		    order
+		        		    ); 
+
+	        		if(c.moveToFirst()){
+	        			do{
+	    	    			curLogNum = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
+	    	        		System.out.println("After-cursor " + curLogNum);
+	        			}	
+	        			while ((!curLogNum.equals(bridgeNumber)) && c.moveToNext());
+	        			if (curLogNum.equals(bridgeNumber)){
+	        				ContentValues valueSet = new ContentValues();
+	    	    	    	valueSet.put(android.provider.CallLog.Calls.NUMBER, this.dialedNumber);
+	    	    	    	int result = getContentResolver().update(
+	    	    	    			android.provider.CallLog.Calls.CONTENT_URI, 
+	    	    	    			valueSet, 
+	    	    	    			android.provider.CallLog.Calls.NUMBER + "=" + bridgeNumber, 
+	    	    	    			null);
+	        			}
+	//        	    	Toast.makeText(getApplicationContext(), "Updating call log" + String.valueOf(result), Toast.LENGTH_SHORT).show();
+	        		};
             	}
             	else{
             		System.out.println("Before call idle state");
             	};
-            }
+    		}
         }
     }
     
