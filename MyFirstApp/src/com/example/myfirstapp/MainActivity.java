@@ -23,7 +23,9 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
-    @Override
+//	public final static String com.example.myfirstapp.ATTR_NUM, com.example.myfirstapp.ATTR_DEL;
+	public static AttributeSet attr_num = null, attr_delay = null;
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -44,7 +46,7 @@ public class MainActivity extends Activity {
 
         Resources r = getResources();
         XmlPullParser parser = r.getXml(R.layout.attr_num);
-        AttributeSet attr_num = null, attr_delay = null;
+//        AttributeSet attr_num = null, attr_delay = null;
 
         int state = 0;
         do {
@@ -133,13 +135,16 @@ public class MainActivity extends Activity {
     /** Called when the user clicks the Send button */
     public void editDone(View view) {
 
-//        EditText editText1 = (EditText) findViewById(R.id.edit_bridge_num);
-        EditText editText1 = (EditText) findViewById(100);
-        String bridgeNum = editText1.getText().toString();
-
-//        EditText editText2 = (EditText) findViewById(R.id.edit_delay);
-        EditText editText2 = (EditText) findViewById(200);
-        String delayTime = editText2.getText().toString();        
+    	String bridgeNum = new String(),delayTime = new String();
+    	for(int i=0;findViewById(100 + i) != null ; i++){
+//    		EditText editText1 = (EditText) findViewById(R.id.edit_bridge_num);
+            EditText editText1 = (EditText) findViewById(100 + i);
+            bridgeNum = ( i==0 ? "" : bridgeNum + ":" ) + editText1.getText().toString();
+            
+//			EditText editText2 = (EditText) findViewById(R.id.edit_delay);
+            EditText editText2 = (EditText) findViewById(200 + i);
+            delayTime = ( i==0 ? "" : delayTime + ":" ) + editText2.getText().toString();        
+    	}
 
         SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.shared_prefs_file), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -152,13 +157,25 @@ public class MainActivity extends Activity {
     /** Called when the user clicks the Reset button */
     public void pressReset(View view) {
 
+    	RelativeLayout baseLayout = (RelativeLayout) findViewById(R.id.base_layout);
+    	RelativeLayout fieldParent = (RelativeLayout) findViewById(R.id.field_parent);
+    	fieldParent.removeAllViews();
 //        EditText editText1 = (EditText) findViewById(R.id.edit_bridge_num);
-        EditText editText1 = (EditText) findViewById(100);
-        editText1.setText(R.string.bridge_default_value, TextView.BufferType.NORMAL);
+//        EditText editText1 = (EditText) findViewById(100);
+    	EditText editText1 = new EditText(this, attr_num);
+    	editText1.setId(100);
+    	editText1.setText(R.string.bridge_default_value, TextView.BufferType.NORMAL);
+    	
+    	fieldParent.addView(editText1);
 
 //        EditText editText2 = (EditText) findViewById(R.id.edit_delay);
-        EditText editText2 = (EditText) findViewById(200);
+//        EditText editText2 = (EditText) findViewById(200);
+        EditText editText2 = new EditText(this, attr_delay);
+        editText2.setId(200);
         editText2.setText(R.string.delay_default_value, TextView.BufferType.NORMAL);
+        fieldParent.addView(editText2);
+        
+        setContentView(baseLayout);
 
         SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.shared_prefs_file), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();

@@ -21,8 +21,6 @@ public class CallBridgeActivity extends Activity {
 //        setContentView(R.layout.activity_call_bridge);
 //        getActionBar().setDisplayHomeAsUpEnabled(true);
         
-//        String uriData, uriDataCorr, dialedNumber;
-
         String uriData = new String();
         
         uriData = getIntent().getDataString();
@@ -169,8 +167,9 @@ public class CallBridgeActivity extends Activity {
 	    	    	    			valueSet, 
 	    	    	    			android.provider.CallLog.Calls.NUMBER + "=" + bridgeNumber, 
 	    	    	    			null);
+		        			System.out.println(result);
 	        			}
-	//        	    	Toast.makeText(getApplicationContext(), "Updating call log" + String.valueOf(result), Toast.LENGTH_SHORT).show();
+//	        	    	Toast.makeText(getApplicationContext(), "Updating call log" + String.valueOf(result), Toast.LENGTH_SHORT).show();
 	        		};
             	}
             	else{
