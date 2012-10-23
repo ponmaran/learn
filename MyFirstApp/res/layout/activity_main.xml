@@ -19,28 +19,37 @@
         android:layout_below="@id/instruction_text" >
 
 	</RelativeLayout>
-
+
     <LinearLayout
         android:id="@+id/button_group"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/field_parent" >
+        android:layout_below="@id/field_parent"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/add_new_row"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="pressAdd"
+            android:text="@string/button_new_row_label" />
 
         <Button
             android:id="@+id/done_button"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
             android:onClick="editDone"
             android:text="@string/button_done_label" />
 
         <Button
             android:id="@+id/reset_button"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
             android:onClick="pressReset"
             android:text="@string/button_reset_label" />
+
     </LinearLayout>
 
 </RelativeLayout>

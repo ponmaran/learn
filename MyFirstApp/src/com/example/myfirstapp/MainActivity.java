@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.telephony.PhoneNumberUtils;
 import android.util.AttributeSet;
 import android.util.Xml;
 import android.view.Menu;
@@ -35,7 +34,7 @@ public class MainActivity extends Activity {
         String a = sharedPref.getString(getString(R.string.bridgeNum), getString(R.string.bridge_default_value));
         String b = sharedPref.getString(getString(R.string.delayTime), getString(R.string.delay_default_value));
         String[] bridgeNum = a.split(":");
-        String[] delayTime = b.split(":");
+        String[] delayTime = b.split(":",bridgeNum.length);
 
         int i=0;
         RelativeLayout fieldParent = (RelativeLayout) findViewById(R.id.field_parent);
@@ -46,7 +45,6 @@ public class MainActivity extends Activity {
 
         Resources r = getResources();
         XmlPullParser parser = r.getXml(R.layout.attr_num);
-//        AttributeSet attr_num = null, attr_delay = null;
 
         int state = 0;
         do {
@@ -138,14 +136,29 @@ public class MainActivity extends Activity {
     	String bridgeNum = new String(),delayTime = new String();
     	for(int i=0;findViewById(100 + i) != null ; i++){
 //    		EditText editText1 = (EditText) findViewById(R.id.edit_bridge_num);
-            EditText editText1 = (EditText) findViewById(100 + i);
-            bridgeNum = ( i==0 ? "" : bridgeNum + ":" ) + editText1.getText().toString();
+            EditText numBox = (EditText) findViewById(100 + i);
+            EditText delBox = (EditText) findViewById(200 + i);
+            String number = numBox.getText().toString();
+            if (number.equals("")){
+            	continue;
+            }
+            else{
+            	if (bridgeNum.equals("")){
+            		bridgeNum = number;
+            		delayTime = delBox.getText().toString();
+            	}
+            	else{
+            		bridgeNum = bridgeNum + ":" + number;
+            		delayTime = delayTime + ":" + delBox.getText().toString();
+            	}
+            }
             
 //			EditText editText2 = (EditText) findViewById(R.id.edit_delay);
-            EditText editText2 = (EditText) findViewById(200 + i);
-            delayTime = ( i==0 ? "" : delayTime + ":" ) + editText2.getText().toString();        
+//            delayTime = ( i==0 ? "" : delayTime + ":" ) +         
     	}
-
+    	System.out.println("Num " + bridgeNum);
+    	System.out.println("Del " + delayTime);
+    	
         SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.shared_prefs_file), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.bridgeNum), bridgeNum);
@@ -162,18 +175,26 @@ public class MainActivity extends Activity {
     	fieldParent.removeAllViews();
 //        EditText editText1 = (EditText) findViewById(R.id.edit_bridge_num);
 //        EditText editText1 = (EditText) findViewById(100);
-    	EditText editText1 = new EditText(this, attr_num);
-    	editText1.setId(100);
-    	editText1.setText(R.string.bridge_default_value, TextView.BufferType.NORMAL);
+    	LinearLayout ll = new LinearLayout(this);
+    	ll.setId(10);
+    	ll.setOrientation(LinearLayout.HORIZONTAL);
+
+		RelativeLayout.LayoutParams fieldSetLP = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+		fieldSetLP.addRule(RelativeLayout.BELOW, 10 - 1);
+		fieldParent.addView(ll, fieldSetLP);
+
+		EditText numBox = new EditText(this, attr_num);
+    	numBox.setId(100);
+    	numBox.setText(R.string.bridge_default_value, TextView.BufferType.NORMAL);
     	
-    	fieldParent.addView(editText1);
+    	ll.addView(numBox);
 
 //        EditText editText2 = (EditText) findViewById(R.id.edit_delay);
 //        EditText editText2 = (EditText) findViewById(200);
-        EditText editText2 = new EditText(this, attr_delay);
-        editText2.setId(200);
-        editText2.setText(R.string.delay_default_value, TextView.BufferType.NORMAL);
-        fieldParent.addView(editText2);
+        EditText delBox = new EditText(this, attr_delay);
+        delBox.setId(200);
+        delBox.setText(R.string.delay_default_value, TextView.BufferType.NORMAL);
+        ll.addView(delBox);
         
         setContentView(baseLayout);
 
@@ -186,14 +207,44 @@ public class MainActivity extends Activity {
 	}
 
     /** Called when the user clicks the Call button */
-    public void pressCall(View view) {
+    public void pressAdd(View view) {
 //        String numSeq = "tel:" + bridgeNum + pauses + dialedNumber;
 //        Uri number = Uri.parse(numSeq);
 /*        Uri number = Uri.parse("tel:9803338444");
         Intent callIntent = new Intent(Intent.ACTION_CALL, number);
         startActivity(callIntent);
 */
-    	String phNum = "+19803338444,,p,w2355";
+    	RelativeLayout baseLayout = (RelativeLayout) findViewById(R.id.base_layout);
+    	RelativeLayout fieldParent = (RelativeLayout) findViewById(R.id.field_parent);
+    	
+    	int i;
+    	for(i=0;findViewById(100 + i) != null ; i++){
+    		System.out.println("Box Count");
+    	};
+
+    	LinearLayout ll = new LinearLayout(this);
+    	ll.setId(10 + i);
+    	ll.setOrientation(LinearLayout.HORIZONTAL);
+
+		RelativeLayout.LayoutParams fieldSetLP = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+		fieldSetLP.addRule(RelativeLayout.BELOW, 10 + (i - 1));
+		fieldParent.addView(ll, fieldSetLP);
+    	
+    	EditText numBox = new EditText(this, attr_num);
+    	numBox.setId(100 + i);
+    	numBox.requestFocus();
+    	numBox.setText(R.string.bridge_default_value, TextView.BufferType.NORMAL);
+    	ll.addView(numBox);
+
+        EditText delBox = new EditText(this, attr_delay);
+        delBox.setId(200 + i);
+        delBox.setText(R.string.delay_default_value, TextView.BufferType.NORMAL);
+
+        ll.addView(delBox);
+        
+        setContentView(baseLayout);
+    	
+/*    	String phNum = "+19803338444,,p,w2355";
     	System.out.println( phNum + "Network portion" + PhoneNumberUtils.extractNetworkPortion(phNum));
 //    	phNum = "9803338444";
     	System.out.println( phNum + "Post dial portion" + PhoneNumberUtils.extractPostDialPortion(phNum));
@@ -203,5 +254,5 @@ public class MainActivity extends Activity {
     	System.out.println( phNum + " Network Portion " + PhoneNumberUtils.extractNetworkPortion(phNum) );
 //    	phNum = "+1-984-883-244";
     	System.out.println( phNum + (PhoneNumberUtils.isGlobalPhoneNumber(phNum)?" is Global":" is Local"));
-	}
+*/	}
 }
