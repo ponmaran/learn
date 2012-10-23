@@ -92,23 +92,31 @@ public class CallBridgeActivity extends Activity {
 
     private String nonUsNumSeqBuild(String dialedNum){
         SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.shared_prefs_file), Context.MODE_PRIVATE);
-        String bridgeNum = sharedPref.getString(getString(R.string.bridgeNum), getString(R.string.bridge_default_value));
-        String delayTime = sharedPref.getString(getString(R.string.delayTime), getString(R.string.delay_default_value));
+        String bridgeNumSeq = sharedPref.getString(getString(R.string.bridgeNum), getString(R.string.bridge_default_value));
+        String delayTimeSeq = sharedPref.getString(getString(R.string.delayTime), getString(R.string.delay_default_value));
 
-        int delayTimeNum = Integer.parseInt(delayTime);
-       
+        String[] bridgeNum = bridgeNumSeq.split(":");
+        String[] delayTime = delayTimeSeq.split(":", bridgeNum.length);
+        
+        int delayTimeNum;
         String pauses = new String();
-        for(int i=0;i<delayTimeNum;i+=2)
-        {
-        	pauses = pauses + ",";
+        String numSeq = "tel:";
+        for(int i = 0; i<bridgeNum.length ; i++){
+        	delayTimeNum = delayTime[i].equals("")? 0 : Integer.parseInt(delayTime[i]);
+        	pauses = "";
+            for(int j=0; j < delayTimeNum ;j += 2)
+            {
+            	pauses = pauses + ",";
+            }
+        	numSeq = numSeq + bridgeNum[i] + pauses;
         }
-
-        if (bridgeNum.equals(getString(R.string.bridge_default_value))){
+        return numSeq + dialedNum;
+/*        if (bridgeNum.equals(getString(R.string.bridge_default_value))){
         	return "tel:" + dialedNum;
         }
         else{
             return "tel:" + bridgeNum + pauses + dialedNum;
-        }
+        }*/
     };
     
     @Override
@@ -154,18 +162,27 @@ public class CallBridgeActivity extends Activity {
 		        		    ); 
 
 	        		if(c.moveToFirst()){
+	        			String callDate = new String(), callDuration = new String();
 	        			do{
 	    	    			curLogNum = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
 	    	        		System.out.println("After-cursor " + curLogNum);
+	    	        		if (curLogNum.equals(bridgeNumber)){
+	    	        			callDate = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.DATE));
+	    	        			callDuration = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.DURATION));
+	    	        		}
 	        			}	
-	        			while ((!curLogNum.equals(bridgeNumber)) && c.moveToNext());
+	        			while (c.moveToNext());
 	        			if (curLogNum.equals(bridgeNumber)){
 	        				ContentValues valueSet = new ContentValues();
 	    	    	    	valueSet.put(android.provider.CallLog.Calls.NUMBER, this.dialedNumber);
+//	    	    	    	valueSet.put(android.provider.CallLog.Calls.DATE, this.callDate);
+//	    	    	    	valueSet.put(android.provider.CallLog.Calls.DURATION, this.dialedNumber);
 	    	    	    	int result = getContentResolver().update(
 	    	    	    			android.provider.CallLog.Calls.CONTENT_URI, 
 	    	    	    			valueSet, 
-	    	    	    			android.provider.CallLog.Calls.NUMBER + "=" + bridgeNumber, 
+	    	    	    			android.provider.CallLog.Calls.NUMBER + "=" + bridgeNumber + " and " + 
+	    	    	    					android.provider.CallLog.Calls.DATE + "=" + callDate + " and " +
+	    	    	    					android.provider.CallLog.Calls.DURATION + "=" + callDuration, 
 	    	    	    			null);
 		        			System.out.println(result);
 	        			}

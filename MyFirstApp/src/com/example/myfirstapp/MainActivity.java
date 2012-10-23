@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -165,6 +166,7 @@ public class MainActivity extends Activity {
         editor.putString(getString(R.string.delayTime), delayTime);
         editor.commit();
         
+    	Toast.makeText(getApplicationContext(), "Information saved successfully!", Toast.LENGTH_LONG).show();
 	}
     
     /** Called when the user clicks the Reset button */
@@ -203,7 +205,7 @@ public class MainActivity extends Activity {
         editor.putString(getString(R.string.bridgeNum), getString(R.string.bridge_default_value));
         editor.putString(getString(R.string.delayTime), getString(R.string.delay_default_value));
         editor.commit();
-        
+    	Toast.makeText(getApplicationContext(), "Reset Successful!", Toast.LENGTH_LONG).show();
 	}
 
     /** Called when the user clicks the Call button */
