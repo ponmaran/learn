@@ -24,7 +24,7 @@ public class CallBridgeActivity extends Activity {
         String uriData = new String();
         
         uriData = getIntent().getDataString();
-        System.out.println("*************");
+
         System.out.println("Actual dialed number from URI " + uriData + " Lenght: " + String.valueOf(uriData.length()));
 
         String uriDataCorr = new String();
@@ -40,17 +40,16 @@ public class CallBridgeActivity extends Activity {
         else{
             dialedNumber = PhoneNumberUtils.extractNetworkPortion(uriDataCorr);
         };
-        System.out.println("After replace " + dialedNumber + " Lenght: " + String.valueOf(dialedNumber.length()));
 
         String numSeq = new String();
         
 //		Phone number type identification
         if (dialedNumber.substring(0, 2).equals("+1")){
-    		System.out.println(dialedNumber + " is US Number");
+    		//System.out.println(dialedNumber + " is US Number");
     		numSeq = "tel:"+ dialedNumber;
     	}
     	else if ( dialedNumber.substring(0,3).equals("011")){
-    		System.out.println(dialedNumber + " is non US with 011");
+    		//System.out.println(dialedNumber + " is non US with 011");
     		numSeq = nonUsNumSeqBuild(dialedNumber);
             
             EndCallListener callListener = new EndCallListener();
@@ -63,7 +62,7 @@ public class CallBridgeActivity extends Activity {
 
     	}
     	else if (dialedNumber.substring(0,1).equals("+")){
-    		System.out.println(dialedNumber + " is non US with +");
+    		//System.out.println(dialedNumber + " is non US with +");
     		String dialedNumberUpdt ="011" + dialedNumber.substring(1);
     		numSeq = nonUsNumSeqBuild(dialedNumberUpdt);
 
@@ -77,7 +76,7 @@ public class CallBridgeActivity extends Activity {
 
     	}
     	else {
-    		System.out.println(dialedNumber + " is US number w/o country code");
+    		//System.out.println(dialedNumber + " is US number w/o country code");
     		numSeq = "tel:" + dialedNumber;
     	};
 
@@ -87,7 +86,7 @@ public class CallBridgeActivity extends Activity {
         Intent callIntent = new Intent(Intent.ACTION_CALL, number);
         startActivity(callIntent);
         
-    	System.out.println("Call Initiated");
+    	//System.out.println("Call Initiated");
     }
 
     private String nonUsNumSeqBuild(String dialedNum){
@@ -135,20 +134,21 @@ public class CallBridgeActivity extends Activity {
 
     		switch (state){
     		case TelephonyManager.CALL_STATE_RINGING:
-            	System.out.println("Phone Ringing for: " + incomingNumber);
+            	//System.out.println("Phone Ringing for: " + incomingNumber);
             	break;
     		case TelephonyManager.CALL_STATE_OFFHOOK:
     			activeCallInd = true;
             	System.out.println("Phone OFFHOOK; Number: \"" + incomingNumber + "\"");
             	break;
     		case TelephonyManager.CALL_STATE_IDLE:
-            	System.out.println("Phone Idle; Number: \"" + incomingNumber + "\"");
-            	System.out.println(dialedNumber);
+            	System.out.println("Phone Idle; Number: \"" + dialedNumber + "\"");
             	if (activeCallInd == true ){
             		((TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE)).listen(this, LISTEN_NONE); 
             		System.out.println("After call idle state");
             		String[] fields = {
-        		    android.provider.CallLog.Calls.NUMBER, 
+        		    android.provider.CallLog.Calls.NUMBER,
+        		    android.provider.CallLog.Calls.DURATION,
+        		    android.provider.CallLog.Calls.DATE,
         		    };
             		String order = android.provider.CallLog.Calls.DATE + " DESC"; 
 
@@ -159,24 +159,24 @@ public class CallBridgeActivity extends Activity {
 		        		    null,
 		        		    null,
 		        		    order
-		        		    ); 
+		        		    );
 
 	        		if(c.moveToFirst()){
 	        			String callDate = new String(), callDuration = new String();
 	        			do{
 	    	    			curLogNum = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
-	    	        		System.out.println("After-cursor " + curLogNum);
+	    	        		System.out.println("Cursor @ " + curLogNum);
 	    	        		if (curLogNum.equals(bridgeNumber)){
 	    	        			callDate = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.DATE));
 	    	        			callDuration = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.DURATION));
+	    	        			System.out.println("Results: " + "Duration: " + callDuration + " Date: " + callDate);
+	    	        			break;
 	    	        		}
 	        			}	
 	        			while (c.moveToNext());
 	        			if (curLogNum.equals(bridgeNumber)){
 	        				ContentValues valueSet = new ContentValues();
 	    	    	    	valueSet.put(android.provider.CallLog.Calls.NUMBER, this.dialedNumber);
-//	    	    	    	valueSet.put(android.provider.CallLog.Calls.DATE, this.callDate);
-//	    	    	    	valueSet.put(android.provider.CallLog.Calls.DURATION, this.dialedNumber);
 	    	    	    	int result = getContentResolver().update(
 	    	    	    			android.provider.CallLog.Calls.CONTENT_URI, 
 	    	    	    			valueSet, 
@@ -184,9 +184,8 @@ public class CallBridgeActivity extends Activity {
 	    	    	    					android.provider.CallLog.Calls.DATE + "=" + callDate + " and " +
 	    	    	    					android.provider.CallLog.Calls.DURATION + "=" + callDuration, 
 	    	    	    			null);
-		        			System.out.println(result);
+		        			System.out.println("Columns updated: " + result);
 	        			}
-//	        	    	Toast.makeText(getApplicationContext(), "Updating call log" + String.valueOf(result), Toast.LENGTH_SHORT).show();
 	        		};
             	}
             	else{

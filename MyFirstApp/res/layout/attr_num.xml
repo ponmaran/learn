@@ -7,4 +7,6 @@
     android:ems="10"
     android:hint="@string/edit_num_hint"
     android:inputType="phone" >
+    
+    <requestFocus />
 </EditText>

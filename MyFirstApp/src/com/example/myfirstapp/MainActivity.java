@@ -86,7 +86,6 @@ public class MainActivity extends Activity {
         
         i=0;
         do{
-        	System.out.println("inside do-while: i1 = " + String.valueOf(i));
         	LinearLayout ll = new LinearLayout(this);
         	ll.setId(10 + i);
         	ll.setOrientation(LinearLayout.HORIZONTAL);
@@ -98,31 +97,23 @@ public class MainActivity extends Activity {
         		fieldSetLP.addRule(RelativeLayout.BELOW, 10 + (i - 1));
         		fieldParent.addView(ll, fieldSetLP);
         	}
-
-        	System.out.println("inside do-while: i2 = " + String.valueOf(i));
         	
             EditText numberBox = new EditText(this, attr_num);
             numberBox.setId(100 + i);
             
             numberBox.setText(bridgeNum[i], TextView.BufferType.NORMAL);
-
-            System.out.println("inside do-while: i3 = " + String.valueOf(i));
             
             EditText delayBox = new EditText(this, attr_delay);
             delayBox.setId(200 + i);
             
             delayBox.setText(delayTime[i], TextView.BufferType.NORMAL);
-            
-            System.out.println("inside do-while: i4 = " + String.valueOf(i));
-            
+
             ll.addView(numberBox);
             ll.addView(delayBox);
             
             i++;
-            System.out.println("inside do-while: i5 = " + String.valueOf(i));
         }while(i<bridgeNum.length && !bridgeNum[i].equals(""));
         setContentView(baseLayout);
-
     }
 
     @Override
@@ -136,7 +127,6 @@ public class MainActivity extends Activity {
 
     	String bridgeNum = new String(),delayTime = new String();
     	for(int i=0;findViewById(100 + i) != null ; i++){
-//    		EditText editText1 = (EditText) findViewById(R.id.edit_bridge_num);
             EditText numBox = (EditText) findViewById(100 + i);
             EditText delBox = (EditText) findViewById(200 + i);
             String number = numBox.getText().toString();
@@ -153,12 +143,9 @@ public class MainActivity extends Activity {
             		delayTime = delayTime + ":" + delBox.getText().toString();
             	}
             }
-            
-//			EditText editText2 = (EditText) findViewById(R.id.edit_delay);
-//            delayTime = ( i==0 ? "" : delayTime + ":" ) +         
     	}
-    	System.out.println("Num " + bridgeNum);
-    	System.out.println("Del " + delayTime);
+    	System.out.println("Number " + bridgeNum);
+    	System.out.println("Delay " + delayTime);
     	
         SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.shared_prefs_file), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -175,8 +162,7 @@ public class MainActivity extends Activity {
     	RelativeLayout baseLayout = (RelativeLayout) findViewById(R.id.base_layout);
     	RelativeLayout fieldParent = (RelativeLayout) findViewById(R.id.field_parent);
     	fieldParent.removeAllViews();
-//        EditText editText1 = (EditText) findViewById(R.id.edit_bridge_num);
-//        EditText editText1 = (EditText) findViewById(100);
+
     	LinearLayout ll = new LinearLayout(this);
     	ll.setId(10);
     	ll.setOrientation(LinearLayout.HORIZONTAL);
@@ -191,11 +177,10 @@ public class MainActivity extends Activity {
     	
     	ll.addView(numBox);
 
-//        EditText editText2 = (EditText) findViewById(R.id.edit_delay);
-//        EditText editText2 = (EditText) findViewById(200);
         EditText delBox = new EditText(this, attr_delay);
         delBox.setId(200);
         delBox.setText(R.string.delay_default_value, TextView.BufferType.NORMAL);
+
         ll.addView(delBox);
         
         setContentView(baseLayout);
@@ -210,18 +195,13 @@ public class MainActivity extends Activity {
 
     /** Called when the user clicks the Call button */
     public void pressAdd(View view) {
-//        String numSeq = "tel:" + bridgeNum + pauses + dialedNumber;
-//        Uri number = Uri.parse(numSeq);
-/*        Uri number = Uri.parse("tel:9803338444");
-        Intent callIntent = new Intent(Intent.ACTION_CALL, number);
-        startActivity(callIntent);
-*/
+
     	RelativeLayout baseLayout = (RelativeLayout) findViewById(R.id.base_layout);
     	RelativeLayout fieldParent = (RelativeLayout) findViewById(R.id.field_parent);
     	
     	int i;
     	for(i=0;findViewById(100 + i) != null ; i++){
-    		System.out.println("Box Count");
+//    		System.out.println("Box Count");
     	};
 
     	LinearLayout ll = new LinearLayout(this);
@@ -234,7 +214,6 @@ public class MainActivity extends Activity {
     	
     	EditText numBox = new EditText(this, attr_num);
     	numBox.setId(100 + i);
-    	numBox.requestFocus();
     	numBox.setText(R.string.bridge_default_value, TextView.BufferType.NORMAL);
     	ll.addView(numBox);
 
@@ -244,17 +223,6 @@ public class MainActivity extends Activity {
 
         ll.addView(delBox);
         
-        setContentView(baseLayout);
-    	
-/*    	String phNum = "+19803338444,,p,w2355";
-    	System.out.println( phNum + "Network portion" + PhoneNumberUtils.extractNetworkPortion(phNum));
-//    	phNum = "9803338444";
-    	System.out.println( phNum + "Post dial portion" + PhoneNumberUtils.extractPostDialPortion(phNum));
-//    	phNum = "+19803338444,,p,w2355";
-    	System.out.println( phNum + " Formated " +PhoneNumberUtils.formatNumber(phNum));
-    	phNum = "011 91 98488 3244";
-    	System.out.println( phNum + " Network Portion " + PhoneNumberUtils.extractNetworkPortion(phNum) );
-//    	phNum = "+1-984-883-244";
-    	System.out.println( phNum + (PhoneNumberUtils.isGlobalPhoneNumber(phNum)?" is Global":" is Local"));
-*/	}
+        setContentView(baseLayout);    	
+	}
 }
