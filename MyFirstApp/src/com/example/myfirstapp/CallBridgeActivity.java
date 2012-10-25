@@ -27,7 +27,7 @@ public class CallBridgeActivity extends Activity {
         
         uriData = getIntent().getDataString();
 
-//		System.out.println("Actual dialed number from URI " + uriData + " Lenght: " + String.valueOf(uriData.length()));
+//		System.out.println("Actual dialed number from URI " + uriData + " Length: " + String.valueOf(uriData.length()));
 
         String uriDataCorr = new String();
 
@@ -108,12 +108,6 @@ public class CallBridgeActivity extends Activity {
         	numSeq = numSeq + bridgeNum[i] + pauses;
         }
         return numSeq + dialedNum;
-/*        if (bridgeNum.equals(getString(R.string.bridge_default_value))){
-        	return "tel:" + dialedNum;
-        }
-        else{
-            return "tel:" + bridgeNum + pauses + dialedNum;
-        }*/
     };
     
     @Override
@@ -125,7 +119,7 @@ public class CallBridgeActivity extends Activity {
     private class EndCallListener extends PhoneStateListener{
     	
     	boolean activeCallInd = false;
-    	int secCallInd = 0;
+    	int secCallInd = 0, numRowsUpdt = 0;
     	String dialedNumber, bridgeNumber, curLogNum;
     	long lastCallDte = 0, offHookTime = 0;
     	
@@ -181,7 +175,7 @@ public class CallBridgeActivity extends Activity {
             		System.out.println("After call idle state :: Number: \"" + dialedNumber + "\"");
 
             		try {
-						Thread.sleep(5000);
+						Thread.sleep(3000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						System.out.println("Sleep interrupted :@");
@@ -197,7 +191,7 @@ public class CallBridgeActivity extends Activity {
 		        		    order
 		        		    );
 
-/*This is to hold until the log is updated
+/*This is to hold until the call log is updated
  * Since sleep() is added, this becomes unnecessary            		
             		System.out.println("Loop Started @ " + String.valueOf(dte.getTime()));
             		while(c.getCount() == 0){
@@ -207,29 +201,44 @@ public class CallBridgeActivity extends Activity {
 */            		
 	        		if(c.moveToFirst()){
 	        			String callDate = new String(), callDuration = new String();
-	        			curLogNum = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
+/*This code is obsolete since do-while is used.
+ * 	        			curLogNum = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
 	        			callDate = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.DATE));
 	        			callDuration = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.DURATION));
 	        			if (!curLogNum.equals(bridgeNumber)){
-		        			do{
-			        			curLogNum = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
-			        			callDate = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.DATE));
-			        			callDuration = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.DURATION));
-			        			if (curLogNum.equals(bridgeNumber) && Long.parseLong(callDate) < offHookTime){
-			        				break;
-			        			}
-		        				System.out.println("Cursor @ " + curLogNum);
+*/		        			
+	        			do{
+		        			curLogNum = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.NUMBER));
+		        			callDate = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.DATE));
+		        			callDuration = c.getString(c.getColumnIndex(android.provider.CallLog.Calls.DURATION));
+		        			if (curLogNum.equals(bridgeNumber) && Long.parseLong(callDate) < offHookTime){
+		        				ContentValues valueSet = new ContentValues();
+		    	    	    	valueSet.put(android.provider.CallLog.Calls.NUMBER, this.dialedNumber);
+		    	    	    	numRowsUpdt = getContentResolver().update(
+		    	    	    			android.provider.CallLog.Calls.CONTENT_URI, 
+		    	    	    			valueSet, 
+		    	    	    			android.provider.CallLog.Calls.NUMBER + "=" + bridgeNumber
+		    	    	    			+ " and " + android.provider.CallLog.Calls.DATE + " < " + offHookTime
+		    	    	    			+ " and " + android.provider.CallLog.Calls.DATE + " > " + this.lastCallDte
+		    	    	    			+ " and " + android.provider.CallLog.Calls.DURATION + "=" + callDuration 
+		    	    	    			,null);
+			        			System.out.println("Rows updated: " + numRowsUpdt);
+		        				break;
 		        			}
-		        			while (c.moveToNext());
+	        				System.out.println("Cursor @ " + curLogNum);
 	        			}
+	        			while (c.moveToNext());
+//	        			}
 	        			System.out.println("lastCallDte: " + lastCallDte);
 	        			System.out.println("Call Date  : " + callDate);
 	        			System.out.println("offHookTime: " + offHookTime);
-	        			
+
+/*Since same condition is checked in do-while, this code is moved in to do-while
+ * 	        			
 	        			if (curLogNum.equals(bridgeNumber)){
 	        				ContentValues valueSet = new ContentValues();
 	    	    	    	valueSet.put(android.provider.CallLog.Calls.NUMBER, this.dialedNumber);
-	    	    	    	int result = getContentResolver().update(
+	    	    	    	int numRowsUpdt = getContentResolver().update(
 	    	    	    			android.provider.CallLog.Calls.CONTENT_URI, 
 	    	    	    			valueSet, 
 	    	    	    			android.provider.CallLog.Calls.NUMBER + "=" + bridgeNumber
@@ -237,9 +246,10 @@ public class CallBridgeActivity extends Activity {
 	    	    	    			+ " and " + android.provider.CallLog.Calls.DATE + " > " + this.lastCallDte
 	    	    	    			+ " and " + android.provider.CallLog.Calls.DURATION + "=" + callDuration 
 	    	    	    			,null);
-		        			System.out.println("Rows updated: " + result);
+		        			System.out.println("Rows updated: " + numRowsUpdt);
 	        			}
-	        		};
+ */
+	        		}
             	}
             	else{
             		System.out.println("Before call idle state :: Date: " + String.valueOf(dte.getTime()));
