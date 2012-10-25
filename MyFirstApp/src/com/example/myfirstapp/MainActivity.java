@@ -40,16 +40,16 @@ public class MainActivity extends Activity {
         int i=0;
         RelativeLayout fieldParent = (RelativeLayout) findViewById(R.id.field_parent);
 
-        for(;i<bridgeNum.length;i++){
+/*		Display saved data
+  		for(;i<bridgeNum.length;i++){
         	System.out.println("Num \"" + bridgeNum[i] +"\" Del \"" + delayTime[i] + "\"");
         }
-
+*/
         Resources r = getResources();
         XmlPullParser parser = r.getXml(R.layout.attr_num);
 
         int state = 0;
         do {
-        	System.out.println("ding");
             try {
                 state = parser.next();
             } catch (XmlPullParserException e1) {
@@ -68,7 +68,6 @@ public class MainActivity extends Activity {
         state = 0;
         parser = r.getXml(R.layout.attr_del);
         do {
-        	System.out.println("dong");
             try {
                 state = parser.next();
             } catch (XmlPullParserException e1) {
