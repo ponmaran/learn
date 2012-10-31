@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package com.example.myfirstapp;
+package ponmaran.utils.OneTouch;
 
 public final class R {
     public static final class attr {

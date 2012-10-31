@@ -1,4 +1,4 @@
-package com.example.myfirstapp;
+package ponmaran.utils.OneTouch;
 
 import java.io.IOException;
 
@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-//	public final static String com.example.myfirstapp.ATTR_NUM, com.example.myfirstapp.ATTR_DEL;
+//	public final static String ponmaran.utils.OneTouch.ATTR_NUM, ponmaran.utils.OneTouch.ATTR_DEL;
 	public static AttributeSet attr_num = null, attr_delay = null;
 	@Override
     public void onCreate(Bundle savedInstanceState) {

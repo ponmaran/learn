@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.myfirstapp"
+    package="ponmaran.utils.OneTouch"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -37,7 +37,7 @@
 	        
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.myfirstapp.MainActivity" />
+                android:value="ponmaran.utils.OneTouch.MainActivity" />
         </activity>
     </application>
 
