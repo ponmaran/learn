@@ -30,9 +30,12 @@
             android:label="@string/title_activity_call_bridge" >
             <intent-filter> 
         	    <action android:name="android.intent.action.CALL_PHONE" />
-		        <category android:name="android.intent.category.DEFAULT" />
+	        </intent-filter>
+            <intent-filter> 
 	            <action android:name="android.intent.action.CALL_PRIVILEGED" />
-	            <data android:scheme="tel" />
+	        </intent-filter>
+            <intent-filter> 
+	            <action android:name="android.intent.action.NEW_OUTGOING_CALL"/>
 	        </intent-filter>
 	        
             <meta-data
@@ -40,5 +43,4 @@
                 android:value="ponmaran.utils.OneTouch.MainActivity" />
         </activity>
     </application>
-
 </manifest>

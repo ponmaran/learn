@@ -24,18 +24,21 @@ public class CallBridgeActivity extends Activity {
 //        getActionBar().setDisplayHomeAsUpEnabled(true);
         
         String uriData = new String();
+        String uriDataCorr = new String();
+        String dialedNumber = new String();
+        String numSeq = new String();
         
         uriData = getIntent().getDataString();
 
-//		System.out.println("Actual dialed number from URI " + uriData + " Length: " + String.valueOf(uriData.length()));
+		System.out.println("Actual dialed number from URI " + uriData 
+				+ " Length: " + String.valueOf(uriData.length())
+				+ " Intent: " + getIntent().getAction());
 
-        String uriDataCorr = new String();
 
         if (uriData.contains("%2B")){
             uriDataCorr = uriData.replaceAll("%2B", "+");
         };
 
-        String dialedNumber = new String();
         if (uriDataCorr.equals("")){
             dialedNumber = PhoneNumberUtils.extractNetworkPortion(uriData);
         }
@@ -43,7 +46,6 @@ public class CallBridgeActivity extends Activity {
             dialedNumber = PhoneNumberUtils.extractNetworkPortion(uriDataCorr);
         };
 
-        String numSeq = new String();
         
 //		Phone number type identification
         if (dialedNumber.substring(0, 2).equals("+1")){
@@ -172,7 +174,10 @@ public class CallBridgeActivity extends Activity {
 //            	System.out.println("Phone Idle; Number: \"" + dialedNumber + "\"");
             	if (activeCallInd == true ){
             		((TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE)).listen(this, LISTEN_NONE); 
-            		System.out.println("After call idle state :: Number: \"" + dialedNumber + "\"");
+            		System.out.println(
+            				"After call idle state :: Incoming Number: \"" + incomingNumber+ "\"" 
+            				+ " Dialed Number: \"" + dialedNumber + "\""
+            				);
 
             		try {
 						Thread.sleep(3000);
@@ -252,6 +257,7 @@ public class CallBridgeActivity extends Activity {
 	        		}
             	}
             	else{
+            		incomingNumber = dialedNumber;
             		System.out.println("Before call idle state :: Date: " + String.valueOf(dte.getTime()));
             		secCallInd++;
             	};

@@ -20,12 +20,18 @@
             android:exported="true">
 	        <intent-filter>
         	    <action android:name="android.intent.action.CALL_PHONE" />
-        	    <category android:name="android.intent.category.DEFAULT" />
-        	    <action android:name="android.intent.action.BOOT_COMPLETED"/>
-	            <action android:name="android.intent.action.CALL_PRIVILEGED" />
+        	    <category android:name="android.intent.category.DEFAULT" />"
+        	</intent-filter>
+	        <intent-filter>
+        	    <action android:name="android.intent.action.CALL" />
+        	    <category android:name="android.intent.category.DEFAULT" />"
+        	</intent-filter>
+	        	        <intent-filter>
+	        	<action android:name="android.intent.action.CALL_PRIVILEGED" />
+	        	<action android:name="android.intent.action.BOOT_COMPLETED"/>
 	            <action android:name="android.intent.action.NEW_OUTGOING_CALL"/>
         	</intent-filter>
-        </receiver>
+       	</receiver>
     </application>
 
 </manifest>
